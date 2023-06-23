@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Game from './pages/Game';
 import logo from './trivia.png';
 import Settings from './pages/Settings';
+import Timer from './components/Timer';
 // import Feedback from './pages/Feedback';
 // import Ranking from './pages/Ranking';
 import './App.css';
@@ -15,6 +16,7 @@ export default function App() {
       <header className="App-header">
         <img src={ logo } className="App-logo" alt="logo" />
         <p>SUA VEZ</p>
+        <Timer />
         <Switch>
           <Route exact path="/" component={ Login } />
           <Route path="/game" component={ Game } />
