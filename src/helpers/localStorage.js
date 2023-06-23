@@ -1,4 +1,7 @@
-export const getStore = () => JSON.parse(localStorage.getItem('trivia'));
+export const getStore = (key) => localStorage.getItem(key);
+
 export const setStore = (key, value) => {
   localStorage.setItem(key, value);
 };
+
+export const removeStore = (key) => localStorage.removeItem(key);

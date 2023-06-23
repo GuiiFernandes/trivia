@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import isEmail from 'validator/es/lib/isEmail';
+import validator from 'validator';
 import { connect } from 'react-redux';
 
-import { fetchTriviaAction, savePlayer } from '../redux/actions';
+import { fetchToken } from '../services/API';
+import { setStore, getStore } from '../helpers/localStorage';
+import { savePlayer } from '../redux/actions';
 
 class Login extends Component {
   state = {
@@ -21,9 +23,13 @@ class Login extends Component {
   };
 
   handleSubmit = async () => {
-    const { history, dispatchFetchTrivia, dispatchSavePlayer } = this.props;
+    const { history, dispatchSavePlayer } = this.props;
+    let token = getStore('token');
+    if (!token) {
+      token = (await fetchToken()).token;
+      setStore('token', token);
+    }
     dispatchSavePlayer(this.state);
-    await dispatchFetchTrivia();
     history.push('/game');
   };
 
@@ -60,7 +66,7 @@ class Login extends Component {
         </label>
         <button
           data-testid="btn-play"
-          disabled={ !(name.length && isEmail(gravatarEmail)) }
+          disabled={ !(name.length && validator.isEmail(gravatarEmail)) }
         >
           Play
         </button>
@@ -80,12 +86,10 @@ Login.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
-  dispatchFetchTrivia: PropTypes.func.isRequired,
   dispatchSavePlayer: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchFetchTrivia: () => dispatch(fetchTriviaAction()),
   dispatchSavePlayer: (player) => dispatch(savePlayer(player)),
 });
 

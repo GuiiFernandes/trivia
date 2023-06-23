@@ -34,9 +34,9 @@ Header.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    email: state.player.gravatarEmail,
-    name: state.player.name,
-    score: state.player.score,
+    email: state.gravatarEmail,
+    name: state.name,
+    score: state.score,
   };
 }
 

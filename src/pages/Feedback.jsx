@@ -34,7 +34,7 @@ Feedback.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    assertions: state.player.assertions,
+    assertions: state.assertions,
   };
 }
 
