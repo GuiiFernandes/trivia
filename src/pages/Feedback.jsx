@@ -25,12 +25,14 @@ class Feedback extends Component {
         </p>
         <p>
           Total de Pontos:
+          {' '}
           <span data-testid="feedback-total-score">
             {score}
           </span>
         </p>
         <p>
           Respostas Corretas:
+          {' '}
           <span data-testid="feedback-total-question">
             {assertions}
           </span>
