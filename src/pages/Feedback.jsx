@@ -66,8 +66,8 @@ Feedback.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    assertions: state.player.assertions,
-    score: state.player.score,
+    assertions: state.assertions,
+    score: state.score,
   };
 }
 
