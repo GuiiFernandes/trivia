@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 class Ranking extends Component {
   render() {
@@ -10,4 +11,4 @@ class Ranking extends Component {
   }
 }
 
-export default Ranking;
+export default connect()(Ranking);

@@ -46,6 +46,7 @@ class Feedback extends Component {
             Play Again
           </button>
         </Link>
+        <button type="button" data-testid="btn-next">Jogar Novamente</button>
         <Link to="/ranking">
           <button
             type="button"
@@ -66,8 +67,8 @@ Feedback.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    assertions: state.assertions,
-    score: state.score,
+    assertions: state.player.assertions,
+    score: state.player.score,
   };
 }
 
