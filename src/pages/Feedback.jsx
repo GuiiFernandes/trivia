@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 import Header from '../components/Header';
 
@@ -16,14 +17,44 @@ class Feedback extends Component {
   };
 
   render() {
-    const { assertions } = this.props;
+    const { assertions, score } = this.props;
     return (
       <div>
         <Header />
         <p data-testid="feedback-text">
           {this.getFeedbackMessage(assertions)}
         </p>
+        <p>
+          Total de Pontos:
+          {' '}
+          <span data-testid="feedback-total-score">
+            {score}
+          </span>
+        </p>
+        <p>
+          Respostas Corretas:
+          {' '}
+          <span data-testid="feedback-total-question">
+            {assertions}
+          </span>
+        </p>
+        <Link to="/">
+          <button
+            type="button"
+            data-testid="btn-play-again"
+          >
+            Play Again
+          </button>
+        </Link>
         <button type="button" data-testid="btn-next">Jogar Novamente</button>
+        <Link to="/ranking">
+          <button
+            type="button"
+            data-testid="btn-ranking"
+          >
+            Ranking
+          </button>
+        </Link>
       </div>
     );
   }
@@ -31,11 +62,13 @@ class Feedback extends Component {
 
 Feedback.propTypes = {
   assertions: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
     assertions: state.player.assertions,
+    score: state.player.score,
   };
 }
 
