@@ -1,22 +1,7 @@
-import { SAVE_PLAYER } from '../actions';
+import { combineReducers } from 'redux';
 
-const initialState = {
-  name: '',
-  assertions: 0,
-  score: 0,
-  gravatarEmail: '',
-};
+import player from './player';
 
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-  case SAVE_PLAYER:
-    return {
-      ...state,
-      ...action.player,
-    };
-  default:
-    return state;
-  }
-};
+const rootReducer = combineReducers({ player });
 
-export default reducer;
+export default rootReducer;
