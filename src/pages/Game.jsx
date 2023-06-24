@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchTrivia } from '../services/API';
-import { getStore, removeStore } from '../helpers/localStorage';
+import { getStore, removeStore, setStore } from '../helpers/localStorage';
 import Header from '../components/Header';
 import { addScore } from '../redux/actions';
 
@@ -36,19 +36,36 @@ class Game extends Component {
   }
 
   componentDidUpdate(_, nextState) {
-    const { history } = this.props;
     const { questionIndex, checkAnswer } = this.state;
     const { time } = nextState;
     if (time === 1) {
       clearInterval(this.timer);
       this.setState({ checkAnswer: true });
     }
-    if (questionIndex === MAX_INDEX && checkAnswer) history.push('/feedback');
+    const isGameFinished = (questionIndex === MAX_INDEX && checkAnswer);
+    if (isGameFinished) {
+      this.finishGame();
+    }
   }
 
   componentWillUnmount() {
     clearInterval(this.timer);
   }
+
+  finishGame = () => {
+    const { history, playerName, playerEmail, score } = this.props;
+
+    const rankingData = JSON.parse(localStorage.getItem('ranking')) || [];
+    const playerData = {
+      name: playerName,
+      email: playerEmail,
+      score,
+    };
+    rankingData.push(playerData);
+
+    setStore('ranking', JSON.stringify(rankingData));
+    history.push('/feedback');
+  };
 
   initialTimer = () => {
     const INTERVAL = 1000;
@@ -153,6 +170,17 @@ Game.propTypes = {
     push: PropTypes.func.isRequired,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
+  playerName: PropTypes.string.isRequired,
+  playerEmail: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
 };
 
-export default connect()(Game);
+function mapStateToProps(state) {
+  return {
+    playerName: state.player.name,
+    playerEmail: state.player.gravatarEmail,
+    score: state.player.score,
+  };
+}
+
+export default connect(mapStateToProps)(Game);
