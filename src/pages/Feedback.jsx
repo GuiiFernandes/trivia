@@ -23,6 +23,7 @@ class Feedback extends Component {
         <p data-testid="feedback-text">
           {this.getFeedbackMessage(assertions)}
         </p>
+        <button type="button" data-testid="btn-next">Jogar Novamente</button>
       </div>
     );
   }
@@ -34,7 +35,7 @@ Feedback.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    assertions: state.assertions,
+    assertions: state.player.assertions,
   };
 }
 
