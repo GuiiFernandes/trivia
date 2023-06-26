@@ -3,25 +3,36 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import getGravatarUrl from '../helpers/gravatarUrl';
+import star from '../images/icon-star.svg';
+import styles from './Header.module.css';
 
 class Header extends Component {
   render() {
     const { email, name, score } = this.props;
 
     return (
-      <div>
-        <img
-          data-testid="header-profile-picture"
-          src={ getGravatarUrl(email) }
-          alt={ name }
-        />
-        <span data-testid="header-player-name">
-          { name }
-        </span>
-        <span data-testid="header-score">
-          { score }
-        </span>
-      </div>
+      <header className={ styles.container }>
+        <div className={ styles.content }>
+          <div className={ styles.profile }>
+            <img
+              className={ styles.img__gravatar }
+              data-testid="header-profile-picture"
+              src={ getGravatarUrl(email) }
+              alt={ name }
+            />
+            <span data-testid="header-player-name">
+              { name }
+            </span>
+          </div>
+          <div className={ styles.score }>
+            <img src={ star } alt="icone de estrela" />
+            Pontos:
+            <span data-testid="header-score" className={ styles.score__number }>
+              { score }
+            </span>
+          </div>
+        </div>
+      </header>
     );
   }
 }

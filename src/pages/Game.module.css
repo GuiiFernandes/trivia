@@ -1,0 +1,23 @@
+.page {
+  align-items: center;
+  background-image: url('../images/background-game.png');
+  background-position: left;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.container__page {
+  align-items: center;
+  display: flex;
+  gap: 121px;
+  justify-content: center;
+  position: relative;
+  top: -100px;
+  width: 85%;
+  z-index: 1;
+}
+

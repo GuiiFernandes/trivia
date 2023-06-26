@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+
 import { fetchTrivia } from '../services/API';
 import { getStore, removeStore, setStore } from '../helpers/localStorage';
 import Header from '../components/Header';
 import { addScore } from '../redux/actions';
+import styles from './Game.module.css';
+import Question from '../components/Question';
 
 const MAX_INDEX = 4;
+const options = ['A', 'B', 'C', 'D'];
 
 class Game extends Component {
   state = {
@@ -121,17 +125,16 @@ class Game extends Component {
   render() {
     const { questionIndex, questions, time, answers, checkAnswer } = this.state;
     if (questions.length) {
-      const { category, question,
-        correct_answer: correctAnswer } = questions[questionIndex];
+      const { correct_answer: correctAnswer } = questions[questionIndex];
       return (
-        <>
+        <main className={ styles.page }>
           <Header />
-          <section>
-            <div>
-              <h3 data-testid="question-category">{category}</h3>
-              <p data-testid="question-text">{question}</p>
-              <p>{`Tempo: ${time} s`}</p>
-            </div>
+          <section className={ styles.container__page }>
+            <Question
+              questions={ questions }
+              questionIndex={ questionIndex }
+              time={ time }
+            />
             <div data-testid="answer-options">
               {
                 answers.map((answer, index) => (
@@ -149,6 +152,8 @@ class Game extends Component {
                 ))
               }
             </div>
+          </section>
+          <footer>
             { checkAnswer && questionIndex !== MAX_INDEX && (
               <button
                 data-testid="btn-next"
@@ -158,8 +163,8 @@ class Game extends Component {
                 Próxima Pergunta
               </button>
             ) }
-          </section>
-        </>
+          </footer>
+        </main>
       );
     }
   }

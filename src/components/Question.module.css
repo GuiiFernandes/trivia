@@ -1,0 +1,46 @@
+.container__left {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.container__question {
+  align-items: center;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 1px 4px 13px 2px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-width: 100vw;
+  min-height: 285px;
+  min-width: fit-content;
+  padding: 20px 30px;
+  position: relative;
+}
+
+.question__category {
+  border-radius: 100px;
+  color: white;
+  font-size: 1.6rem;
+  letter-spacing: 1.92px;
+  padding: 14px 0;
+  position: absolute;
+  text-align: center;
+  text-transform: uppercase;
+  top: -23px;
+  width: 94%;
+}
+
+.timer {
+  align-items: center;
+  display: flex;
+  font-weight: 700;
+  gap: 5px;
+}
+
+.trybe__icon {
+  margin-top: 38px;
+  width: 40px;
+}
