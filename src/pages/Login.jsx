@@ -5,13 +5,18 @@ import { connect } from 'react-redux';
 
 import { fetchToken } from '../services/API';
 import { setStore, getStore } from '../helpers/localStorage';
-import { savePlayer } from '../redux/actions';
+import { savePlayer, resetGameData } from '../redux/actions';
 
 class Login extends Component {
   state = {
     name: '',
     gravatarEmail: '',
   };
+
+  componentDidMount() {
+    const { dispatchResetGameData } = this.props;
+    dispatchResetGameData();
+  }
 
   handleChange = ({ target: { name, value } }) => {
     this.setState({ [name]: value });
@@ -87,10 +92,12 @@ Login.propTypes = {
     push: PropTypes.func,
   }).isRequired,
   dispatchSavePlayer: PropTypes.func.isRequired,
+  dispatchResetGameData: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchSavePlayer: (player) => dispatch(savePlayer(player)),
+  dispatchResetGameData: () => dispatch(resetGameData()),
 });
 
 export default connect(null, mapDispatchToProps)(Login);
