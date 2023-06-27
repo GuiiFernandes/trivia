@@ -13,11 +13,14 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  max-width: 100vw;
+  max-width: 439px;
   min-height: 285px;
-  min-width: fit-content;
   padding: 20px 30px;
   position: relative;
+}
+
+.logo {
+  height: 222px;
 }
 
 .question__category {

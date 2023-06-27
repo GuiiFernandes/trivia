@@ -6,11 +6,11 @@ import { fetchTrivia } from '../services/API';
 import { getStore, removeStore, setStore } from '../helpers/localStorage';
 import Header from '../components/Header';
 import { addScore } from '../redux/actions';
+import { getStyleAnswer, getCheckAnswer } from '../helpers/checkAnswer';
 import styles from './Game.module.css';
 import Question from '../components/Question';
 
 const MAX_INDEX = 4;
-const options = ['A', 'B', 'C', 'D'];
 
 class Game extends Component {
   state = {
@@ -19,6 +19,7 @@ class Game extends Component {
     answers: [],
     time: 30,
     checkAnswer: false,
+    answerClick: {},
   };
 
   async componentDidMount() {
@@ -83,21 +84,12 @@ class Game extends Component {
     return answers.sort(() => Math.random() - SUB_SORT);
   };
 
-  styleAnswer = (answer, correctAnswer) => {
-    const { checkAnswer } = this.state;
-    if (checkAnswer) {
-      if (answer === correctAnswer) return { border: '3px solid rgb(6, 240, 15)' };
-      return { border: '3px solid red' };
-    }
-    return {};
-  };
-
-  handleClick = (answer) => {
+  handleClick = (answer, index) => {
     const { dispatch, history } = this.props;
     const { questionIndex, questions, time, checkAnswer } = this.state;
     const { correct_answer: correctAnswer, difficulty } = questions[questionIndex];
     clearInterval(this.timer);
-    this.setState({ checkAnswer: true }, () => {
+    this.setState({ checkAnswer: true, answerClick: { answer, index } }, () => {
       if (answer === correctAnswer) {
         const MIN_POINTS = 10;
         const dificultyPoints = { easy: 1, medium: 2, hard: 3 };
@@ -118,12 +110,14 @@ class Game extends Component {
         questions[questionIndex + 1].correct_answer,
         ...questions[questionIndex + 1].incorrect_answers,
       ]),
+      answerClick: {},
     }));
     this.initialTimer();
   };
 
   render() {
-    const { questionIndex, questions, time, answers, checkAnswer } = this.state;
+    const { questionIndex, questions, time,
+      answers, checkAnswer, answerClick } = this.state;
     if (questions.length) {
       const { correct_answer: correctAnswer } = questions[questionIndex];
       return (
@@ -135,18 +129,27 @@ class Game extends Component {
               questionIndex={ questionIndex }
               time={ time }
             />
-            <div data-testid="answer-options">
+            <div className={ styles.container__right } data-testid="answer-options">
               {
                 answers.map((answer, index) => (
                   <button
+                    className={ styles.answer }
                     key={ index }
-                    style={ this.styleAnswer(answer, correctAnswer) }
+                    style={ getStyleAnswer(answer, correctAnswer, checkAnswer) }
                     data-testid={ `${answer === correctAnswer
                       ? 'correct-answer' : `wrong-answer-${index}`}` }
                     type="button"
-                    onClick={ () => this.handleClick(answer) }
+                    onClick={ () => this.handleClick(answer, index) }
                     disabled={ checkAnswer }
                   >
+                    <div className={ styles.letter }>
+                      {getCheckAnswer(
+                        index,
+                        correctAnswer,
+                        checkAnswer,
+                        answerClick,
+                      )}
+                    </div>
                     {answer}
                   </button>
                 ))

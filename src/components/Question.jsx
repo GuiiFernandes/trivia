@@ -24,7 +24,7 @@ export default class Question extends Component {
       const { backgroundColor } = triviaCategories.find(({ name }) => name === category);
       return (
         <div className={ styles.container__left }>
-          <img src={ logo } className="App-logo" alt="logo" />
+          <img src={ logo } className={ `App-logo ${styles.logo}` } alt="logo" />
           <div className={ styles.container__question }>
             <div />
             <h3

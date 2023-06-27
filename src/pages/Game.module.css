@@ -21,3 +21,39 @@
   z-index: 1;
 }
 
+.container__right {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 519px;
+  width: 100%;
+}
+
+.answer {
+  align-items: center;
+  background-color: white;
+  border: none;
+  border-radius: 100px;
+  color: black;
+  cursor: pointer;
+  display: flex;
+  gap: 20px;
+  padding: 9px 10px;
+  width: 100%;
+}
+
+.letter {
+  align-items: center;
+  background-color: var(--gray-400);
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  font-size: 2.4rem;
+  font-weight: 700;
+  height: 4.6rem;
+  justify-content: center;
+  text-align: center;
+  text-transform: uppercase;
+  width: 4.6rem;
+}
