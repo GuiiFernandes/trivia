@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { shuffle } from 'lodash';
+
 import { fetchTrivia } from '../services/API';
 import { getStore, removeStore, setStore } from '../helpers/localStorage';
 import Header from '../components/Header';
+import Question from '../components/Question';
 import { addScore } from '../redux/actions';
+import { getStyleAnswer } from '../helpers/checkAnswer';
+import trybe from '../images/icone-trybe.svg';
+import styles from './Game.module.css';
 
 const MAX_INDEX = 4;
 
@@ -27,7 +33,7 @@ class Game extends Component {
     }
     this.setState({
       questions: data.results,
-      answers: this.sortAnswers([
+      answers: shuffle([
         data.results[0].correct_answer,
         ...data.results[0].incorrect_answers,
       ]),
@@ -36,15 +42,10 @@ class Game extends Component {
   }
 
   componentDidUpdate(_, nextState) {
-    const { questionIndex, checkAnswer } = this.state;
     const { time } = nextState;
     if (time === 1) {
       clearInterval(this.timer);
       this.setState({ checkAnswer: true });
-    }
-    const isGameFinished = (questionIndex === MAX_INDEX && checkAnswer);
-    if (isGameFinished) {
-      this.finishGame();
     }
   }
 
@@ -74,20 +75,6 @@ class Game extends Component {
     }, INTERVAL);
   };
 
-  sortAnswers = (answers) => {
-    const SUB_SORT = 0.5;
-    return answers.sort(() => Math.random() - SUB_SORT);
-  };
-
-  styleAnswer = (answer, correctAnswer) => {
-    const { checkAnswer } = this.state;
-    if (checkAnswer) {
-      if (answer === correctAnswer) return { border: '3px solid rgb(6, 240, 15)' };
-      return { border: '3px solid red' };
-    }
-    return {};
-  };
-
   handleClick = (answer) => {
     const { dispatch, history } = this.props;
     const { questionIndex, questions, time, checkAnswer } = this.state;
@@ -105,61 +92,86 @@ class Game extends Component {
   };
 
   nextQuestion = () => {
-    const { questionIndex, questions } = this.state;
-    this.setState(({
-      questionIndex: questionIndex + 1,
-      time: 30,
-      checkAnswer: false,
-      answers: this.sortAnswers([
-        questions[questionIndex + 1].correct_answer,
-        ...questions[questionIndex + 1].incorrect_answers,
-      ]),
-    }));
-    this.initialTimer();
+    const { questionIndex, questions, checkAnswer } = this.state;
+    const isGameFinished = (questionIndex === MAX_INDEX && checkAnswer);
+    if (isGameFinished) {
+      this.finishGame();
+    } else {
+      this.setState(({
+        questionIndex: questionIndex + 1,
+        time: 30,
+        checkAnswer: false,
+        answers: shuffle([
+          questions[questionIndex + 1].correct_answer,
+          ...questions[questionIndex + 1].incorrect_answers,
+        ]),
+        // answerClick: {},
+      }));
+      this.initialTimer();
+    }
   };
 
   render() {
-    const { questionIndex, questions, time, answers, checkAnswer } = this.state;
+    const { questionIndex, questions, time,
+      answers, checkAnswer } = this.state;
     if (questions.length) {
-      const { category, question,
-        correct_answer: correctAnswer } = questions[questionIndex];
+      const { correct_answer: correctAnswer } = questions[questionIndex];
       return (
-        <>
+        <main className={ styles.page }>
           <Header />
-          <section>
-            <div>
-              <h3 data-testid="question-category">{category}</h3>
-              <p data-testid="question-text">{question}</p>
-              <p>{`Tempo: ${time} s`}</p>
-            </div>
-            <div data-testid="answer-options">
+          <section className={ styles.container__page }>
+            <Question
+              questions={ questions }
+              questionIndex={ questionIndex }
+              time={ time }
+            />
+            <ol className={ styles.container__right } data-testid="answer-options">
               {
                 answers.map((answer, index) => (
                   <button
                     key={ index }
-                    style={ this.styleAnswer(answer, correctAnswer) }
                     data-testid={ `${answer === correctAnswer
                       ? 'correct-answer' : `wrong-answer-${index}`}` }
+                    className={ styles.answer }
+                    style={ getStyleAnswer(answer, correctAnswer, checkAnswer) }
                     type="button"
-                    onClick={ () => this.handleClick(answer) }
+                    onClick={ () => this.handleClick(answer, index) }
                     disabled={ checkAnswer }
                   >
-                    {answer}
+                    <li className={ styles.letter }>
+                      {/* {getCheckAnswer(
+                        index,
+                        correctAnswer,
+                        checkAnswer,
+                        answerClick,
+                      )} */}
+                      {answer}
+                    </li>
                   </button>
                 ))
               }
-            </div>
-            { checkAnswer && questionIndex !== MAX_INDEX && (
-              <button
-                data-testid="btn-next"
-                onClick={ this.nextQuestion }
-                type="button"
-              >
-                Próxima Pergunta
-              </button>
-            ) }
+            </ol>
+            <footer className={ styles.footer }>
+              <div className={ styles.footer__container }>
+                <img src={ trybe } className={ styles.trybe__icon } alt="logo-trybe" />
+                <div className={ styles.footer__btn }>
+                  { checkAnswer && (
+                    <button
+                      className={ styles.btn__next }
+                      data-testid="btn-next"
+                      onClick={ this.nextQuestion }
+                      type="button"
+                    >
+                      { questionIndex === MAX_INDEX
+                        ? 'Ir para Resultado'
+                        : 'Próxima Pergunta' }
+                    </button>
+                  ) }
+                </div>
+              </div>
+            </footer>
           </section>
-        </>
+        </main>
       );
     }
   }

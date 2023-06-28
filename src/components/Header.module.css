@@ -1,0 +1,33 @@
+.container {
+  align-items: center;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  padding: 38px 0;
+  position: fixed;
+  width: 100%;
+}
+
+.content {
+  align-items: center;
+  display: flex;
+  gap: 30px;
+  justify-content: flex-end;
+  width: 85%;
+}
+
+.profile, .score {
+  align-items: center;
+  display: flex;
+  gap: 13px;
+}
+
+.score__number {
+  font-weight: 700;
+}
+
+.img__gravatar {
+  border-radius: 50%;
+  height: 37px;
+  width: 37px;
+}
