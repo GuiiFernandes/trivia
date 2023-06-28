@@ -1,5 +1,7 @@
 :root {
 
+  --gray-100: #ebebeb;
+
   --gray-300: #e1e5eb;
 
   --gray-400: #ddd;
@@ -13,6 +15,8 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  scrollbar-color: var(--purple) white;
+  scrollbar-width: auto;
 }
 
 html {
@@ -26,6 +30,24 @@ body > div {
   flex-direction: column;
   font-size: 1.6rem;
   min-height: 100vh;
+}
+
+ul li {
+  list-style: none;
+}
+
+*::-webkit-scrollbar {
+  width: 7px;
+}
+
+*::-webkit-scrollbar-track {
+  background: white;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--purple);
+  border: none;
+  border-radius: 16px;
 }
 
 .App-logo {

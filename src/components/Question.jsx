@@ -4,7 +4,6 @@ import { CgTimer } from 'react-icons/cg';
 
 import triviaCategories from '../helpers/triviaCategories';
 import logo from '../images/logo-trivia.svg';
-import trybe from '../images/icone-trybe.svg';
 import styles from './Question.module.css';
 
 export default class Question extends Component {
@@ -40,7 +39,6 @@ export default class Question extends Component {
               <span>{`Tempo: ${time} s`}</span>
             </div>
           </div>
-          <img src={ trybe } className={ styles.trybe__icon } alt="logo-trybe" />
         </div>
       );
     }

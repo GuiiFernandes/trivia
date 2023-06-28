@@ -3,70 +3,102 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
+import logo from '../images/logo-trivia.svg';
+import styles from './Feedback.module.css';
+import getGravatarUrl from '../helpers/gravatarUrl';
 import Header from '../components/Header';
 
 class Feedback extends Component {
-  getFeedbackMessage = (assertions) => {
-    const lessThanThreeMsg = 'Could be better...';
-    const threeOrMoreMsg = 'Well Done!';
-    const acertosThreshold = 3;
-    if (assertions < acertosThreshold) {
-      return lessThanThreeMsg;
-    }
-    return threeOrMoreMsg;
+  state = {
+    feedback: '',
   };
 
+  componentDidMount() {
+    const HIT_THRESHOLD = 3;
+    const { assertions } = this.props;
+    this.setState({
+      feedback: assertions < HIT_THRESHOLD ? 'Could be better...' : 'Well Done!',
+    });
+  }
+
   render() {
-    const { assertions, score } = this.props;
+    const { feedback } = this.state;
+    const goodFeedback = feedback === 'Well Done!';
+    const { assertions, score, gravatarEmail } = this.props;
     return (
-      <div>
-        <Header />
-        <p data-testid="feedback-text">
-          {this.getFeedbackMessage(assertions)}
-        </p>
-        <p>
-          Total de Pontos:
-          {' '}
-          <span data-testid="feedback-total-score">
-            {score}
-          </span>
-        </p>
-        <p>
-          Respostas Corretas:
-          {' '}
-          <span data-testid="feedback-total-question">
-            {assertions}
-          </span>
-        </p>
-        <Link to="/">
-          <button
-            type="button"
-            data-testid="btn-play-again"
+      <main className={ styles.page }>
+        <div style={ { display: 'none' } }>
+          <Header />
+        </div>
+        <img src={ logo } className={ `App-logo ${styles.logo__img}` } alt="logo" />
+        <section className={ styles.feedback__container }>
+          <img
+            style={ { border: `4px solid ${goodFeedback ? '#2FC18C' : '#EA5D5D'}` } }
+            className={ styles.img__gravatar }
+            src={ getGravatarUrl(gravatarEmail) }
+            alt="Gravatar foto"
+          />
+          <p
+            data-testid="feedback-text"
+            style={ { color: `${goodFeedback ? '#2FC18C' : '#EA5D5D'}` } }
+            className={ styles.text__feedback }
           >
-            Play Again
-          </button>
-        </Link>
-        <button type="button" data-testid="btn-next">Jogar Novamente</button>
-        <Link to="/ranking">
-          <button
-            type="button"
-            data-testid="btn-ranking"
-          >
-            Ranking
-          </button>
-        </Link>
-      </div>
+            {feedback}
+          </p>
+          <p className={ styles.text__score }>
+            Você acertou
+            {' '}
+            <span data-testid="feedback-total-question">
+              {assertions}
+            </span>
+            {' '}
+            questões!
+          </p>
+          <p className={ styles.text__score }>
+            Um total de
+            {' '}
+            <span data-testid="feedback-total-score">
+              {score}
+            </span>
+            {' '}
+            pontos
+          </p>
+        </section>
+        <aside className={ styles.btns }>
+          <Link to="/ranking">
+            <button
+              className={ `${styles.btn} ${styles.ranking}` }
+              type="button"
+              data-testid="btn-ranking"
+            >
+              Ver Ranking
+            </button>
+          </Link>
+          <Link to="/">
+            <button
+              className={ `${styles.btn} ${styles.play}` }
+              type="button"
+              data-testid="btn-play-again"
+            >
+              Jogar Novamente
+            </button>
+          </Link>
+        </aside>
+        <footer className={ styles.footer } />
+      </main>
     );
   }
 }
 
 Feedback.propTypes = {
+  gravatarEmail: PropTypes.string.isRequired,
   assertions: PropTypes.number.isRequired,
   score: PropTypes.number.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
+    gravatarEmail: state.player.gravatarEmail,
     assertions: state.player.assertions,
     score: state.player.score,
   };

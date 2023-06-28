@@ -1,8 +1,9 @@
 .container__left {
-  align-items: center;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 60px;
+  position: relative;
+  z-index: 1;
 }
 
 .container__question {
@@ -28,7 +29,7 @@
   color: white;
   font-size: 1.6rem;
   letter-spacing: 1.92px;
-  padding: 14px 0;
+  padding: 14px 10px;
   position: absolute;
   text-align: center;
   text-transform: uppercase;
@@ -41,9 +42,4 @@
   display: flex;
   font-weight: 700;
   gap: 5px;
-}
-
-.trybe__icon {
-  margin-top: 38px;
-  width: 40px;
 }

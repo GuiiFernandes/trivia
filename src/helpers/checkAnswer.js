@@ -1,5 +1,6 @@
 import correctIcon from '../images/correct-icon.svg';
 import incorrectIcon from '../images/incorrect-icon.svg';
+import styles from '../pages/Game.module.css';
 
 const options = ['A', 'B', 'C', 'D'];
 
@@ -31,6 +32,7 @@ export const getCheckAnswer = (
   if (checkAnswer && answerClick.index === index) {
     return (
       <img
+        className={ styles.answer__icon }
         src={ answerClick.answer === correctAnswer ? correctIcon : incorrectIcon }
         alt={ answerClick.answer === correctAnswer ? 'correct' : 'incorrect' }
       />
