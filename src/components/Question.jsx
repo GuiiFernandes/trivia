@@ -34,7 +34,11 @@ export default class Question extends Component {
               {category}
             </h3>
             <p data-testid="question-text">{question}</p>
-            <div className={ styles.timer } style={ this.colorTimer() }>
+            <div
+              className={ styles.timer }
+              style={ this.colorTimer() }
+              data-testid="timer-container"
+            >
               <CgTimer size="20px" />
               <span>{`Tempo: ${time} s`}</span>
             </div>
