@@ -59,4 +59,44 @@ describe('2- Verifica a página de Feedback', () => {
         expect(pathname).toBe('/ranking');
     }, 5000)
   });
+
+  it('Verifica se a frase, questões certas e pontos corretos é exibida na tela ao acertar menos de 3 questões', () => {
+    const initialState = {
+      player: {
+        name: 'Teste',
+        assertions: 1,
+        score: 70,
+        gravatarEmail: 'teste@email.com',
+      },
+    };
+
+    renderWithRouterAndRedux(<App />, initialState, '/feedback' );
+    const feedbackText = screen.getByTestId('feedback-text');
+    const totalScore = screen.getByTestId('feedback-total-score');
+    const totalQuestion = screen.getByTestId('feedback-total-question');
+
+    expect(feedbackText).toHaveTextContent('Could be better...');
+    expect(totalScore).toHaveTextContent(initialState.player.score);
+    expect(totalQuestion).toHaveTextContent(initialState.player.assertions);
+  });
+
+  it('Verifica se a frase, questões certas e pontos corretos é exibida na tela ao acertar menos de 3 questões', () => {
+    const initialState = {
+      player: {
+        name: 'Teste2',
+        assertions: 4,
+        score: 273,
+        gravatarEmail: 'teste2@email.com',
+      },
+    };
+
+    renderWithRouterAndRedux(<App />, initialState, '/feedback' );
+    const feedbackText = screen.getByTestId('feedback-text');
+    const totalScore = screen.getByTestId('feedback-total-score');
+    const totalQuestion = screen.getByTestId('feedback-total-question');
+
+    expect(feedbackText).toHaveTextContent('Well Done!');
+    expect(totalScore).toHaveTextContent(initialState.player.score);
+    expect(totalQuestion).toHaveTextContent(initialState.player.assertions);
+  });
 });

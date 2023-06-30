@@ -41,8 +41,8 @@ class Game extends Component {
     this.initialTimer();
   }
 
-  componentDidUpdate(_, nextState) {
-    const { time } = nextState;
+  componentDidUpdate(_, prevState) {
+    const { time } = prevState;
     if (time === 1) {
       clearInterval(this.timer);
       this.setState({ checkAnswer: true });
@@ -92,12 +92,12 @@ class Game extends Component {
   };
 
   nextQuestion = () => {
-    const { questionIndex, questions, checkAnswer } = this.state;
-    const isGameFinished = (questionIndex === MAX_INDEX && checkAnswer);
+    const { questionIndex, questions } = this.state;
+    const isGameFinished = (questionIndex === MAX_INDEX);
     if (isGameFinished) {
       this.finishGame();
     } else {
-      this.setState(({
+      this.setState({
         questionIndex: questionIndex + 1,
         time: 30,
         checkAnswer: false,
@@ -106,8 +106,7 @@ class Game extends Component {
           ...questions[questionIndex + 1].incorrect_answers,
         ]),
         // answerClick: {},
-      }));
-      this.initialTimer();
+      }, () => { this.initialTimer(); });
     }
   };
 

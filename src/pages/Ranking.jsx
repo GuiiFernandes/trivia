@@ -73,7 +73,6 @@ class Ranking extends Component {
             </button>
           </Link>
         </section>
-        <footer className={ styles.footer } />
       </main>
     );
   }

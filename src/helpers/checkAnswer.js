@@ -1,8 +1,8 @@
-import correctIcon from '../images/correct-icon.svg';
-import incorrectIcon from '../images/incorrect-icon.svg';
-import styles from '../pages/Game.module.css';
+// import correctIcon from '../images/correct-icon.svg';
+// import incorrectIcon from '../images/incorrect-icon.svg';
+// import styles from '../pages/Game.module.css';
 
-const options = ['A', 'B', 'C', 'D'];
+// const options = ['A', 'B', 'C', 'D'];
 
 export const styleAnswer = {
   correct: {
@@ -23,20 +23,20 @@ export const getStyleAnswer = (answer, correctAnswer, checkAnswer) => {
   return {};
 };
 
-export const getCheckAnswer = (
-  index,
-  correctAnswer,
-  checkAnswer,
-  answerClick,
-) => {
-  if (checkAnswer && answerClick.index === index) {
-    return (
-      <img
-        className={ styles.answer__icon }
-        src={ answerClick.answer === correctAnswer ? correctIcon : incorrectIcon }
-        alt={ answerClick.answer === correctAnswer ? 'correct' : 'incorrect' }
-      />
-    );
-  }
-  return options[index];
-};
+// export const getCheckAnswer = (
+//   index,
+//   correctAnswer,
+//   checkAnswer,
+//   answerClick,
+// ) => {
+//   if (checkAnswer && answerClick.index === index) {
+//     return (
+//       <img
+//         className={ styles.answer__icon }
+//         src={ answerClick.answer === correctAnswer ? correctIcon : incorrectIcon }
+//         alt={ answerClick.answer === correctAnswer ? 'correct' : 'incorrect' }
+//       />
+//     );
+//   }
+//   return options[index];
+// };
