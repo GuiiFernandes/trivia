@@ -43,3 +43,9 @@
   font-weight: 700;
   gap: 5px;
 }
+
+
+.trybe__icon {
+  margin: 0 auto;
+  width: 40px;
+}

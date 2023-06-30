@@ -8,8 +8,7 @@ import { getStore, removeStore, setStore } from '../helpers/localStorage';
 import Header from '../components/Header';
 import Question from '../components/Question';
 import { addScore } from '../redux/actions';
-import { getStyleAnswer } from '../helpers/checkAnswer';
-import trybe from '../images/icone-trybe.svg';
+import { getCheckAnswer, getStyleAnswer } from '../helpers/checkAnswer';
 import styles from './Game.module.css';
 
 const MAX_INDEX = 4;
@@ -21,6 +20,7 @@ class Game extends Component {
     answers: [],
     time: 30,
     checkAnswer: false,
+    answerClick: {},
   };
 
   async componentDidMount() {
@@ -75,12 +75,12 @@ class Game extends Component {
     }, INTERVAL);
   };
 
-  handleClick = (answer) => {
+  handleClick = (answer, index) => {
     const { dispatch } = this.props;
     const { questionIndex, questions, time } = this.state;
     const { correct_answer: correctAnswer, difficulty } = questions[questionIndex];
     clearInterval(this.timer);
-    this.setState({ checkAnswer: true }, () => {
+    this.setState({ checkAnswer: true, answerClick: { index, answer } }, () => {
       if (answer === correctAnswer) {
         const MIN_POINTS = 10;
         const difficultyPoints = { easy: 1, medium: 2, hard: 3 };
@@ -104,14 +104,14 @@ class Game extends Component {
           questions[questionIndex + 1].correct_answer,
           ...questions[questionIndex + 1].incorrect_answers,
         ]),
-        // answerClick: {},
+        answerClick: {},
       }, () => { this.initialTimer(); });
     }
   };
 
   render() {
     const { questionIndex, questions, time,
-      answers, checkAnswer } = this.state;
+      answers, checkAnswer, answerClick } = this.state;
     if (questions.length) {
       const { correct_answer: correctAnswer } = questions[questionIndex];
       return (
@@ -123,51 +123,49 @@ class Game extends Component {
               questionIndex={ questionIndex }
               time={ time }
             />
-            <ol className={ styles.container__right } data-testid="answer-options">
-              {
-                answers.map((answer, index) => (
-                  <button
-                    key={ index }
-                    data-testid={ `${answer === correctAnswer
-                      ? 'correct-answer' : `wrong-answer-${index}`}` }
-                    className={ styles.answer }
-                    style={ getStyleAnswer(answer, correctAnswer, checkAnswer) }
-                    type="button"
-                    onClick={ () => this.handleClick(answer, index) }
-                    disabled={ checkAnswer }
-                  >
-                    <li className={ styles.letter }>
-                      {/* {getCheckAnswer(
-                        index,
-                        correctAnswer,
-                        checkAnswer,
-                        answerClick,
-                      )} */}
-                      {answer}
-                    </li>
-                  </button>
-                ))
-              }
-            </ol>
-            <footer className={ styles.footer }>
-              <div className={ styles.footer__container }>
-                <img src={ trybe } className={ styles.trybe__icon } alt="logo-trybe" />
-                <div className={ styles.footer__btn }>
-                  { checkAnswer && (
+            <div className={ styles.container__right }>
+              <ul className={ styles.container__answers } data-testid="answer-options">
+                {
+                  answers.map((answer, index) => (
                     <button
-                      className={ styles.btn__next }
-                      data-testid="btn-next"
-                      onClick={ this.nextQuestion }
+                      key={ index }
+                      data-testid={ `${answer === correctAnswer
+                        ? 'correct-answer' : `wrong-answer-${index}`}` }
+                      className={ styles.answer }
+                      style={ getStyleAnswer(answer, correctAnswer, checkAnswer) }
                       type="button"
+                      onClick={ () => this.handleClick(answer, index) }
+                      disabled={ checkAnswer }
                     >
-                      { questionIndex === MAX_INDEX
-                        ? 'Ir para Resultado'
-                        : 'Próxima Pergunta' }
+                      <div className={ styles.letter }>
+                        {getCheckAnswer(
+                          index,
+                          correctAnswer,
+                          checkAnswer,
+                          answerClick,
+                        )}
+                      </div>
+                      {answer}
                     </button>
-                  ) }
-                </div>
-              </div>
-            </footer>
+                  ))
+                }
+              </ul>
+              { checkAnswer ? (
+                <button
+                  className={ styles.btn__next }
+                  data-testid="btn-next"
+                  onClick={ this.nextQuestion }
+                  type="button"
+                >
+                  { questionIndex === MAX_INDEX
+                    ? 'Ir para Resultado'
+                    : 'Próxima Pergunta' }
+                </button>
+              ) : (
+                <div className={ styles.ghost__btn } />
+              ) }
+            </div>
+            <footer className={ styles.footer } />
           </section>
         </main>
       );
