@@ -4,15 +4,12 @@ import userEvent from "@testing-library/user-event";
 
 import renderWithRouterAndRedux from "./helpers/renderWithRouterAndRedux";
 import App from '../App';
-import { questions } from "./helpers/arrays";
-import { wait } from "@testing-library/user-event/dist/utils";
-
-jest.setTimeout(40000);
+import { difficultyPoints, questions } from "./helpers/arrays";
 
 describe('3- Verifica a página de Game', () => {
+  jest.setTimeout(50000);
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.useRealTimers();
   });
 
   it('Verifica se os componentes estão sendo renderizados na página de Game', async () => {
@@ -45,14 +42,13 @@ describe('3- Verifica a página de Game', () => {
   });
 
   it('Verifica se ao passar um token inválido retorna para a página inicial', async () => {
-    jest.setTimeout(32000);
     jest.spyOn(global, 'fetch').mockResolvedValue({
       json: jest.fn().mockResolvedValue({
         response_code: 3,
         results: [],
       }),
     });
-    const {history} = renderWithRouterAndRedux(<App />);
+    const { history } = renderWithRouterAndRedux(<App />);
     const emailInput = screen.getByTestId('input-gravatar-email');
     const nameInput = screen.getByTestId('input-player-name');
     const btnPlay = screen.getByTestId('btn-play');
@@ -69,9 +65,54 @@ describe('3- Verifica a página de Game', () => {
     expect(pathname).toBe('/');
   });
 
-  it('Verifica se o timer fica amarelo e vermelho abaixo de 15 e 8 segundos, se os botões são desabilitados após 30 segundos, se o botão de next aparece e se as bordas aparecem nas respostas', async () => {
-    jest.setTimeout(40000);
-    jest.spyOn(global, 'setInterval');
+  it('Verifica se ao responder 5 perguntas é redirecionado para a página de feedback', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: jest.fn().mockResolvedValue({
+        response_code: 0,
+        results: questions,
+      }),
+    });
+    const { history } = renderWithRouterAndRedux(<App />);
+    const emailInput = screen.getByTestId('input-gravatar-email');
+    const nameInput = screen.getByTestId('input-player-name');
+    const btnPlay = screen.getByTestId('btn-play');
+
+    act(() => {
+      userEvent.type(emailInput, 'teste@email.com');
+      userEvent.type(nameInput, 'Teste');
+      userEvent.click(btnPlay);
+    });
+
+    await screen.findByTestId('question-category');
+
+    for (let index = 0; index < 5; index += 1) {
+      const correctAnswer = screen.getByTestId('correct-answer');
+      expect(correctAnswer).toHaveTextContent(questions[index].correct_answer);
+      expect(screen.getByTestId('question-text')).toHaveTextContent(questions[index].question);
+
+      act(() => {
+        userEvent.click(correctAnswer);
+      });
+
+      const nextBtn = screen.getByTestId('btn-next');
+      if (index === 4) {
+        expect(nextBtn).toHaveTextContent(/ir para resultado/i);
+      } 
+
+      act(() => {
+        userEvent.click(nextBtn);
+      });
+    }
+
+    const scoreEl = screen.getByTestId('header-score');
+    expect(scoreEl).toHaveTextContent('380');
+
+    await screen.findByTestId('feedback-text');
+    const { pathname } = history.location;
+    expect(pathname).toBe('/feedback');
+  });
+
+  it('Verifica se ao responder as perguntas os pontos são computados corretamente e se a próxima pergunta é renderizada.', async () => {
     jest.spyOn(global, 'fetch').mockResolvedValue({
       json: jest.fn().mockResolvedValue({
         response_code: 0,
@@ -83,14 +124,74 @@ describe('3- Verifica a página de Game', () => {
     const nameInput = screen.getByTestId('input-player-name');
     const btnPlay = screen.getByTestId('btn-play');
 
-
     act(() => {
       userEvent.type(emailInput, 'teste@email.com');
       userEvent.type(nameInput, 'Teste');
       userEvent.click(btnPlay);
     });
 
-    // await screen.findByText(/tempo: 30 s/i);
+    await screen.findByTestId('question-category');
+
+    let points = 0;
+
+    for (let index = 0; index < 4; index += 1) {
+      const correctAnswer = screen.getByTestId('correct-answer');
+      expect(correctAnswer).toHaveTextContent(questions[index].correct_answer);
+      expect(screen.getByTestId('question-text')).toHaveTextContent(questions[index].question);
+
+      act(() => {
+        userEvent.click(correctAnswer);
+      });
+
+      
+      const time = screen.getByTestId('timer-container').lastChild.childNodes[0].textContent.split(' ')[1];
+      points += 10 + Number(time) * difficultyPoints[questions[index].difficulty];
+
+      const scoreEl = screen.getByTestId('header-score');
+      expect(scoreEl).toHaveTextContent(`${points}`);
+
+      const nextBtn = screen.getByTestId('btn-next');
+      expect(nextBtn).toBeVisible();
+
+      act(() => {
+        userEvent.click(nextBtn);
+      });
+    }
+
+    await waitFor(() => {
+      expect(screen.getByTestId('timer-container').lastChild).toHaveTextContent('Tempo: 26 s');
+    }, {timeout: 5000});
+
+
+    const incorrectAnswers = screen.getAllByTestId(/wrong-answer/);
+
+    act(() => {
+      userEvent.click(incorrectAnswers[0]);
+    });
+    const scoreEl = screen.getByTestId('header-score');
+    expect(scoreEl).toHaveTextContent(`${points}`);
+    
+    const nextBtn = screen.getByTestId('btn-next');
+    expect(nextBtn).toBeVisible();
+  });
+
+  it('Verifica se o timer fica amarelo e vermelho abaixo de 15 e 8 segundos, se os botões são desabilitados após 30 segundos, se o botão de next aparece e se as bordas aparecem nas respostas', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue({
+      json: jest.fn().mockResolvedValue({
+        response_code: 0,
+        results: questions,
+      }),
+    });
+    renderWithRouterAndRedux(<App />);
+    const emailInput = screen.getByTestId('input-gravatar-email');
+    const nameInput = screen.getByTestId('input-player-name');
+    const btnPlay = screen.getByTestId('btn-play');
+
+    act(() => {
+      userEvent.type(emailInput, 'teste@email.com');
+      userEvent.type(nameInput, 'Teste');
+      userEvent.click(btnPlay);
+    });
 
     await waitFor(() => {
       expect(screen.getByTestId('timer-container').style.color).toBe('rgb(242, 183, 5)');

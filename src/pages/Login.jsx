@@ -33,7 +33,7 @@ class Login extends Component {
 
   handleSubmit = async () => {
     const { history, dispatchSavePlayer } = this.props;
-    const token = getStore('token') || await fetchToken().token;
+    const token = getStore('token') || (await fetchToken()).token;
     setStore('token', token);
     dispatchSavePlayer(this.state);
     history.push('/game');

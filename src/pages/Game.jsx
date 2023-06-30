@@ -76,18 +76,17 @@ class Game extends Component {
   };
 
   handleClick = (answer) => {
-    const { dispatch, history } = this.props;
-    const { questionIndex, questions, time, checkAnswer } = this.state;
+    const { dispatch } = this.props;
+    const { questionIndex, questions, time } = this.state;
     const { correct_answer: correctAnswer, difficulty } = questions[questionIndex];
     clearInterval(this.timer);
     this.setState({ checkAnswer: true }, () => {
       if (answer === correctAnswer) {
         const MIN_POINTS = 10;
-        const dificultyPoints = { easy: 1, medium: 2, hard: 3 };
-        const points = MIN_POINTS + (time * dificultyPoints[difficulty]);
+        const difficultyPoints = { easy: 1, medium: 2, hard: 3 };
+        const points = MIN_POINTS + (time * difficultyPoints[difficulty]);
         dispatch(addScore(points));
       }
-      if (questionIndex === MAX_INDEX && checkAnswer) history.push('/feedback');
     });
   };
 
@@ -173,6 +172,7 @@ class Game extends Component {
         </main>
       );
     }
+    return <div data-testid="loading">Carregando...</div>;
   }
 }
 

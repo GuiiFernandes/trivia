@@ -106,3 +106,5 @@ export const questions = [
     type: "boolean",
   },
 ];
+
+export const difficultyPoints = { easy: 1, medium: 2, hard: 3 };
