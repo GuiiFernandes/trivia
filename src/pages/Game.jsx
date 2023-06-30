@@ -172,7 +172,6 @@ class Game extends Component {
         </main>
       );
     }
-    return <div data-testid="loading">Carregando...</div>;
   }
 }
 
